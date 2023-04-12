@@ -1,34 +1,35 @@
 package main
 
 import (
-
-	//"io/ioutil"
 	"bufio"
+	"fmt"
 	"os"
-
-	//"os"
-	//"iotuil"
-	"log"
-	//"github.com/carolinesh/funtemps/conv"
+	"yr"
 )
 
-// Funkjsonen for å lese filen
+// Det som brukeren skal kunne skrive inn i terminalviduet
 
 func main() {
-	file, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
-	if err != nil {
-		log.Fatal("Unable to read file: %v", err)
-	}
-	defer file.Close()
+	var input string
+	scanner := bufio.NewScanner(os.Stdin)
 
-	// Bruker scanner og finner vedrien til gradene som er 4. elementet
+	for scanner.Scan() {
+		input = scanner.Text()
+		if input == "exit" {
+			fmt.Println("Programmet avslutter")
+			os.Exit(0)
 
-	scanner := bufio.NewScanner(file)
-	var value string
-	for i := 0; scanner.Scan(); i++ {
-		if i == 3 {
-			value = scanner.Text()
-			break
+		} else if input == "convert" {
+			fmt.Println("Koverterer målingene og printer ut ny fil")
+			// Må legge til Y/N her?
+			// Må kalle på metoden som gjør at filen konverterer og skriver ut ny til med gitt navn
+			 func GetData()
+
+		} else if input == "average" {
+			fmt.Println("Regner ut gjennomsnittet")
+			//Må kalle til en funkjson
+		} else {
+			fmt.Println("Velg mellom convert, average eller exit")
 		}
 	}
 }
