@@ -9,13 +9,14 @@ import (
 	"github.com/carolinesh/funtemps/conv"
 )
 
+// Test fahrenheit to celsius
 func TestFahrenheitToCelsius(t *testing.T) {
 	type test struct {
 		input string
 		want  string
 	}
 	tests := []test{
-		{input: "6", want: "42.8"},
+		{input: "10", want: "-12.2"},
 	}
 
 	for _, tc := range tests {
@@ -33,7 +34,42 @@ func TestFahrenheitToCelsius(t *testing.T) {
 	// utføre testen
 
 	for _, tc := range tests {
-		got := conv.FahrenheitToCelsius(f)
+		got := conv.FahrenheitToCelsius('f')
+		if !reflect.DeepEqual(tc.want, got) {
+			t.Errorf("expected: %v, got: %v", tc.want, got)
+		}
+	}
+
+}
+
+// Test celsius to fahrenheit
+
+func TestCelsiusToFahrenheit(t *testing.T) {
+	type test struct {
+		input string
+		want  string
+	}
+	tests := []test{
+		{input: "6", want: "42.8"},
+		{input: "0", want: "32.0"},
+	}
+
+	for _, tc := range tests {
+		f, err := strconv.ParseFloat(tc.input, 64)
+		if err != nil {
+			t.Errorf("error ved konvertering av input %v", tc.input)
+		}
+
+		str := strconv.FormatFloat(f, 'f', 6, 64)
+		if str != tc.want {
+			t.Errorf("expected: %v, got: %v", tc.want, str)
+		}
+	}
+
+	// utføre testen
+
+	for _, tc := range tests {
+		got := conv.CelsiusToFahrenheit('f')
 		if !reflect.DeepEqual(tc.want, got) {
 			t.Errorf("expected: %v, got: %v", tc.want, got)
 		}
