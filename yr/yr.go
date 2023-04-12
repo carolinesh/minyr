@@ -10,57 +10,104 @@ import (
 	"strings"
 )
 
-// Funkjsonen for å lese filen, konvertere og printe ut ny fil.
-
-func GetData() {
-	file, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
+func ConvertTemperatures() ([]string, error) {
+	file, err := OpenFile("kjevik-temp-celsius-20220318-20230318.csv")
 	if err != nil {
-		log.Fatalf("Unable to read file: %v", err)
+		return nil, err
 	}
-	defer file.Close()
-
-	// Bruker scanner og finner vedrien til gradene som er 4. elementet
-
+	defer CloseFile(file)
 	scanner := bufio.NewScanner(file)
-	var tempValues []float64
 
-	// looper igjennom for å hente ut verdiene
+	ConvertedTemperatures := make([]string, 0)
 
 	for i := 0; scanner.Scan(); i++ {
-		if i == 0 { //Hopper over første linjen i dataen
-			continue
-		}
-	}
-	for scanner.Scan() {
 		line := scanner.Text()
-		values := strings.Split(line, ";")
-		tempCelsius, err := strconv.ParseFloat(values[3], 64)
-		if err != nil {
-			panic(err)
+
+		if i == 0 {
+			continue // ignorerer overskriftslinjen
 		}
-		tempValues = append(tempValues, tempCelsius)
+
+		fields := strings.Split(line, ";")
+		if len(fields) != 4 {
+			return nil, fmt.Errorf("uventet antall felt i linje %d: %d", i, len(fields))
+		}
+
+		if fields[3] == "" {
+			continue // ignorerer linjer med tomme temperaturfelt
+		}
+
+		TemperatureCelsius, err := strconv.ParseFloat(fields[3], 64)
+
+		if err != nil {
+			return nil, fmt.Errorf("kunne ikke parse temperatur i linje %d: %s", i, err)
+		}
+		TemperatureFahrenheit := CelsiusToFahrenheit(TemperatureCelsius)
+
+		ConvertedTemperature := fmt.Sprintf("%s;%s;%.2fF", fields[0], strings.Join(fields[1:3], ";"), TemperatureFahrenheit)
+		ConvertedTemperatures = append(ConvertedTemperatures, ConvertedTemperature)
 	}
+
 	if err := scanner.Err(); err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	// avlutt og create ny fil med de nye verdiene.
-
-	outFile, err := os.Create("nyFil.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer outFile.Close()
-
-	writer := bufio.NewWriter(outFile)
-
-	for _, tempCelsius := range tempValues {
-		tempFahrenheit := conv.CelsiusToFahrenheit(tempCelsius)
-		fmt.Fprintf(writer, "%.2f\n", tempFahrenheit)
-	}
-	writer.Flush() //Tømmer bufferen for mellomlagret data
+	return ConvertedTemperatures, nil
 }
 
-func Yr() {
-	GetData()
+func GetAndWriteTemperatures(filename string) error {
+	lines, err := ConvertTemperatures()
+	if err != nil {
+		return err
+	}
+	return WriteLines(lines, filename)
+}
+
+func CelsiusToFahrenheit(celsius float64) float64 {
+	return conv.CelsiusToFahrenheit(celsius)
+}
+
+func WriteLines(lines []string, filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer CloseFile(file)
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+
+	// Skriver overskriftslinjen
+	fmt.Fprintln(writer, "Navn;Stasjon;Tid(norsk normaltid);Lufttemperatur (F)")
+
+	for _, line := range lines {
+		fmt.Fprintln(writer, line)
+	}
+
+	fmt.Fprint(writer, "Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Mathias Irgemo")
+
+	return nil
+}
+
+func ReadLines(file *os.File) ([]string, error) {
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "Navn") {
+			continue // ignorerer overskriftslinjen
+		}
+		lines = append(lines, line)
+	}
+	return lines, scanner.Err()
+}
+
+func CloseFile(file *os.File) {
+	err := file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func OpenFile(filename string) (*os.File, error) {
+	file, err := os.Open(filename)
+	return file, err
 }
