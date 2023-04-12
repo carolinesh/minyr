@@ -3,12 +3,11 @@ package yr
 import (
 	"bufio"
 	"fmt"
+	"github.com/carolinesh/funtemps/conv"
 	"log"
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/carolinesh/funtemps/conv"
 )
 
 // Funkjsonen for å lese filen, konvertere og printe ut ny fil.
