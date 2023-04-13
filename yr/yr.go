@@ -3,11 +3,12 @@ package yr
 import (
 	"bufio"
 	"fmt"
-	"github.com/carolinesh/funtemps/conv"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/carolinesh/funtemps/conv"
 )
 
 func ConvertTemperatures() ([]string, error) {
@@ -82,7 +83,7 @@ func WriteLines(lines []string, filename string) error {
 		fmt.Fprintln(writer, line)
 	}
 
-	fmt.Fprint(writer, "Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Mathias Irgemo")
+	fmt.Fprint(writer, "Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Caroline")
 
 	return nil
 }

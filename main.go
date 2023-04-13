@@ -57,7 +57,7 @@ func main() {
 		} else if input == "average" {
 			var unit string
 			for unit != "c" && unit != "f" {
-				fmt.Print("Spesifiser type (c / f): ")
+				fmt.Print("Hvil du ha utregningen i Celsius eller Fahrenheir? (c / f): ")
 				scanner.Scan()
 				unit = strings.ToLower(scanner.Text())
 			}

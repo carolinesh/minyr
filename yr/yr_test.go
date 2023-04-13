@@ -2,7 +2,7 @@ package yr
 
 import (
 	//"fmt"
-	"reflect"
+
 	"strconv"
 	"testing"
 
@@ -16,7 +16,7 @@ func TestFahrenheitToCelsius(t *testing.T) {
 		want  string
 	}
 	tests := []test{
-		{input: "10", want: "-12.2"},
+		{input: "6", want: "42.8"},
 	}
 
 	for _, tc := range tests {
@@ -25,21 +25,12 @@ func TestFahrenheitToCelsius(t *testing.T) {
 			t.Errorf("error ved konvertering av input %v", tc.input)
 		}
 
-		str := strconv.FormatFloat(f, 'f', 6, 64)
-		if str != tc.want {
-			t.Errorf("expected: %v, got: %v", tc.want, str)
+		got := conv.FahrenheitToCelsius(f)
+		s := strconv.FormatFloat(f, 'f', 2, 64)
+		if s != tc.want {
+			t.Errorf("forventet: %v, fikk: %v", tc.want, got)
 		}
 	}
-
-	// utføre testen
-
-	for _, tc := range tests {
-		got := conv.FahrenheitToCelsius('f')
-		if !reflect.DeepEqual(tc.want, got) {
-			t.Errorf("expected: %v, got: %v", tc.want, got)
-		}
-	}
-
 }
 
 // Test celsius to fahrenheit
@@ -50,8 +41,7 @@ func TestCelsiusToFahrenheit(t *testing.T) {
 		want  string
 	}
 	tests := []test{
-		{input: "6", want: "42.8"},
-		{input: "0", want: "32.0"},
+		{input: "42.8", want: "6"},
 	}
 
 	for _, tc := range tests {
@@ -60,50 +50,10 @@ func TestCelsiusToFahrenheit(t *testing.T) {
 			t.Errorf("error ved konvertering av input %v", tc.input)
 		}
 
-		str := strconv.FormatFloat(f, 'f', 6, 64)
-		if str != tc.want {
-			t.Errorf("expected: %v, got: %v", tc.want, str)
-		}
-	}
-
-	// utføre testen
-
-	for _, tc := range tests {
-		got := conv.CelsiusToFahrenheit('f')
-		if !reflect.DeepEqual(tc.want, got) {
-			t.Errorf("expected: %v, got: %v", tc.want, got)
-		}
-	}
-
-}
-
-/* Konvertere fra string til float64
-	str := "6"
-	f, err := strconv.ParseFloat(str, 64)
-	if err != nil {
-		fmt.Println("error ved konvertering")
-	}
-
-
-	// Konvertere fra float64 til string
-   {
-    f := 42.8
-    str := strconv.FormatFloat(f,'f',6,64 ) }
-
-	//Utføre testen
-	tests := []test{
-		{input: "6", want:"42.8" },
-	}
-
-	for _, tc := range tests {
-		got := conv.FahrenheitToCelsius(f)
-		if !reflect.DeepEqual(tc.want, got) {
-			t.Errorf("expected: %v, got: %v", tc.want, got)
+		got := conv.CelsiusToFahrenheit(f)
+		s := strconv.FormatFloat(f, 'f', 2, 64)
+		if s != tc.want {
+			t.Errorf("forventet: %v, fikk: %v", tc.want, got)
 		}
 	}
 }
-*/
-
-// Sett inn testfunksjonen fra den forige oppgaven her
-// Bruke string conv pakke for å kunne konvertere string
-// til float og float til string
