@@ -12,7 +12,7 @@ import (
 )
 
 func ConvertTemperatures() ([]string, error) {
-	file, err := OpenFile("kjevik-temp-celsius-20220318-20230318.csv")
+	file, err := OpenFile("../kjevik-temp-celsius-20220318-20230318.csv")
 	if err != nil {
 		return nil, err
 	}

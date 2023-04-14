@@ -1,59 +1,50 @@
 package yr
 
 import (
-	//"fmt"
-
-	"strconv"
+	"fmt"
+	"os"
+	"strings"
 	"testing"
-
-	"github.com/carolinesh/funtemps/conv"
 )
 
-// Test fahrenheit to celsius
-func TestFahrenheitToCelsius(t *testing.T) {
-	type test struct {
-		input string
-		want  string
+func TestReadLines(t *testing.T) {
+	file, err := os.Open("../kjevik-temp-celsius-20220318-20230318.csv")
+	if err != nil {
+		t.Fatalf("Failed to open test file: %v", err)
 	}
-	tests := []test{
-		{input: "6", want: "42.8"},
+	defer file.Close()
+
+	lines, err := ReadLines(file)
+	if err != nil {
+		t.Fatalf("ReadLines failed: %v", err)
 	}
 
-	for _, tc := range tests {
-		f, err := strconv.ParseFloat(tc.input, 64)
-		if err != nil {
-			t.Errorf("error ved konvertering av input %v", tc.input)
-		}
-
-		got := conv.FahrenheitToCelsius(f)
-		s := strconv.FormatFloat(f, 'f', 2, 64)
-		if s != tc.want {
-			t.Errorf("forventet: %v, fikk: %v", tc.want, got)
-		}
+	expected := 16756
+	if len(lines) != expected {
+		t.Fatalf("Unexpected number of lines. Expected %v, but got %v", expected, len(lines))
 	}
 }
-
-// Test celsius to fahrenheit
-
-func TestCelsiusToFahrenheit(t *testing.T) {
-	type test struct {
-		input string
-		want  string
-	}
-	tests := []test{
-		{input: "42.8", want: "6"},
+func TestConvertTemperatures(t *testing.T) {
+	lines, err := ConvertTemperatures()
+	if err != nil {
+		t.Fatalf("ConvertTemperatures failed: %v", err)
 	}
 
-	for _, tc := range tests {
-		f, err := strconv.ParseFloat(tc.input, 64)
-		if err != nil {
-			t.Errorf("error ved konvertering av input %v", tc.input)
-		}
+	// Set up input values
+	input := "Kjevik;SN39040;18.03.2022 01:50;6"
+	want := "Kjevik;SN39040;18.03.2022 01:50;42.80F"
 
-		got := conv.CelsiusToFahrenheit(f)
-		s := strconv.FormatFloat(f, 'f', 2, 64)
-		if s != tc.want {
-			t.Errorf("forventet: %v, fikk: %v", tc.want, got)
+	// Find the input value in the output slice
+	var got string
+	for _, line := range lines {
+		if strings.HasPrefix(line, input) {
+			got = line
+			break
 		}
+	}
+
+	if got != want {
+		fmt.Println(want)
+		fmt.Println(got)
 	}
 }

@@ -54,6 +54,8 @@ func main() {
 				log.Fatal(err)
 			}
 
+			// Utregning av average temperatur
+
 		} else if input == "average" {
 			var unit string
 			for unit != "c" && unit != "f" {
